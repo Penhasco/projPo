@@ -1,0 +1,15 @@
+O projecto pode ser compilado de duas formas. Assumindo que se está no directório que inclui o directório prr (que é o directório raiz que contém o código da aplicação a desenvolver), a compilação pode ser feita das seguintes formas:
+
+javac -cp po-uilib.jar:. `find xxl -name "*.java"`
+find xxl -name "*.java" -print | xargs javac -cp po-uilib.jar:.
+
+onde po-uilib.jar é o ficheiro jar com o código da framework de interação com o utilizador e está-se a assumir que também estão no mesmo directório que inclui o directório raiz do projecto. Casos os ficheiros tenham outro nome, ou estejam noutro directório então é necessário alterar o comando por forma a ter em conta as alterações.
+
+Assumindo que se está ainda no mesmo directório que inclui o diretório raiz do projecto, para executar o projecto é necessário dar o seguinte comando:
+
+java -cp po-uilib.jar:. xxl.app.App
+
+Se se quiser começar a aplicação indicando um ficheiro com o estado inicial da aplicação (por exemplo, ficheiro.im), então é necessário dar o seguinte comando:
+
+java -Dimport=ficheiro.im -cp po-uilib.jar:. xxl.app.App
+
