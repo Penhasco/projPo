@@ -1,5 +1,6 @@
 package xxl.app.main;
 
+import pt.tecnico.uilib.forms.Field;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -21,10 +22,15 @@ class DoOpen extends Command<Calculator> {
   
       try {
         Form form = new Form();
-        form.addStringField("File", Message.openFile());
-        form.parse();
-        String filename = form.getStringField("File");
-        _receiver.load(filename);
+      form.addStringField("File", Message.openFile()); // Assuming openFile() returns a file name or path
+      form.parse();
+
+      //Retrieve the value of the File
+      String filename = form.stringField("File");
+
+      //Call the load method of _receiver to load the file
+      _receiver.load(filename);
+
 
       } catch (UnavailableFileException e) {
       throw new FileOpenFailedException(e);
