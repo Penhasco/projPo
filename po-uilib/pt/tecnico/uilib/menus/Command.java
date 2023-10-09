@@ -147,7 +147,7 @@ public abstract class Command<Receiver> {
    */
   public final void performCommand() throws CommandException {
     _display.clear();
-    _form.parse();
+    _form.resetFields(); //parse();
     execute();
     _display.displayText();
   }

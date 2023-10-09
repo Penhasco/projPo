@@ -71,14 +71,14 @@ public class Display {
    * @return the display
    */
   public Display addNewLine(Object toAdd, boolean force) {
-    if (force || _text.length() > 0)
+    if (force || !_text.isEmpty())
       add("\n");
     add(toAdd);
     return this;
   }
 
   /**
-   * Display the text hold by this display, even if the text to show is the empty string.
+   * Display the text held by this display, even if the text to show is the empty string.
    * Clear the text after the text was shown to the user.
    */
   public final void display() {
@@ -87,14 +87,14 @@ public class Display {
   }
 
   /**
-   * Display the text hold by this display only if there is something to show (text is not the
+   * Display the text held by this display only if there is something to show (text is not the
    * empty string). Otherwise, it does nothing.
    * In the textual interaction this method and the display() method are similar. With a visual
    * interaction, the behabior of both methods is distinct when the text to show is the empty string.
    * Clear the text after the text was shown to the user.
    */
   public final void displayText() {
-    if (_text.length() > 0) {
+    if (!_text.isEmpty()) {
       _ui.render(_title, _text.toString());
       clear();
     }
