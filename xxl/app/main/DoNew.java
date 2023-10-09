@@ -20,8 +20,8 @@ class DoNew extends Command<Calculator> {
   @Override
   protected final void execute() throws CommandException {
     Form form = new Form();
-    form.addIntegerField("Lines", "Enter the number of lines");
-    form.addIntegerField("Columns", "Enter the number of columns");
+    form.addIntegerField("Lines", "Enter the number of lines:");
+    form.addIntegerField("Columns", "Enter the number of columns:");
     form.parse();
 
     //Gets dimensions from the form fields

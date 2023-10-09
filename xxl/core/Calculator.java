@@ -1,14 +1,16 @@
 package xxl.core;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import xxl.core.exception.ImportFileException;
 import xxl.core.exception.MissingFileAssociationException;
 import xxl.core.exception.UnavailableFileException;
 import xxl.core.exception.UnrecognizedEntryException;
-
-
 // FIXME import classes
 
 /**
@@ -18,6 +20,8 @@ public class Calculator {
   /** The current spreadsheet. */
   private Spreadsheet _spreadsheet;
   private User _user;
+  private String _associatedFile;
+  private boolean _dirty;
   
   // FIXME add more fields and methods if needed
   
@@ -26,6 +30,13 @@ public class Calculator {
    *
    * @returns the current spreadsheet of this application. This reference can be null.
    */
+  public Calculator() {
+    _spreadsheet = null;
+    _user = null;
+    _associatedFile = null;
+    _dirty = false;
+  }
+
   public final Spreadsheet getSpreadsheet() {
     return _spreadsheet;
   }
@@ -34,6 +45,21 @@ public class Calculator {
     return _user;
   }
 
+  public void setAssociatedFile(String filename) {
+    _associatedFile = filename;
+  }
+
+  public String getAssociatedFile() {
+    return _associatedFile;
+  }
+
+  public boolean isDirty() {
+    return _dirty;
+  }
+
+  public void setDirty(boolean dirty) {
+    _dirty = dirty;
+  }
 
   /**
    * Saves the serialized application's state into the file associated to the current network.
@@ -43,7 +69,11 @@ public class Calculator {
    * @throws IOException if there is some error while serializing the state of the network to disk.
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-    
+    if (_associatedFile == null) {
+      throw new MissingFileAssociationException();
+    }
+    saveAs(_associatedFile);
+
 
   }
   
@@ -58,6 +88,17 @@ public class Calculator {
    */
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
     // FIXME implement serialization method
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(this); // Serialize the Calculator instance
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        } 
+        _associatedFile = filename;
+        _dirty = false;
 
   }
   
@@ -68,7 +109,23 @@ public class Calculator {
    *         an error while processing this file.
    */
   public void load(String filename) throws UnavailableFileException {
-    // FIXME implement serialization method
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            Calculator loadedCalculator = (Calculator) ois.readObject(); // Deserialize the Calculator instance
+            // Copy the state of the loaded calculator to this calculator
+            this._spreadsheet = loadedCalculator._spreadsheet;
+            this._user = loadedCalculator._user;
+            this._associatedFile = loadedCalculator._associatedFile;
+            this._dirty = loadedCalculator._dirty;
+        }
+        catch (FileNotFoundException e) {
+            throw new UnavailableFileException(filename);
+        }
+        catch (IOException e) {
+            throw new UnavailableFileException(filename);
+        }
+        catch (ClassNotFoundException e) {
+            throw new UnavailableFileException(filename);
+        }
   }
   
   /**
@@ -95,5 +152,6 @@ public class Calculator {
 
   public void createNewSpreadsheet(int rows, int columns){
     _spreadsheet = new Spreadsheet(rows, columns);
+    _dirty = true;
   }
 }
