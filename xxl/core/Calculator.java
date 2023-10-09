@@ -8,6 +8,7 @@ import xxl.core.exception.MissingFileAssociationException;
 import xxl.core.exception.UnavailableFileException;
 import xxl.core.exception.UnrecognizedEntryException;
 
+
 // FIXME import classes
 
 /**
@@ -16,6 +17,7 @@ import xxl.core.exception.UnrecognizedEntryException;
 public class Calculator {
   /** The current spreadsheet. */
   private Spreadsheet _spreadsheet;
+  private User _user;
   
   // FIXME add more fields and methods if needed
   
@@ -28,6 +30,11 @@ public class Calculator {
     return _spreadsheet;
   }
 
+  public final User getUser(){
+    return _user;
+  }
+
+
   /**
    * Saves the serialized application's state into the file associated to the current network.
    *
@@ -36,7 +43,8 @@ public class Calculator {
    * @throws IOException if there is some error while serializing the state of the network to disk.
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-    // FIXME implement serialization method
+    
+
   }
   
   /**
@@ -50,6 +58,7 @@ public class Calculator {
    */
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
     // FIXME implement serialization method
+
   }
   
   /**
@@ -77,5 +86,14 @@ public class Calculator {
     } catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
       throw new ImportFileException(filename, e);
     }
-  } 
+
+  }
+  
+  public boolean createUser(String name){
+    return true;
+  }
+
+  public void createNewSpreadsheet(int rows, int columns){
+    _spreadsheet = new Spreadsheet(rows, columns);
+  }
 }

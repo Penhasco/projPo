@@ -16,5 +16,6 @@ class DoShowCutBuffer extends Command<Spreadsheet> {
   @Override
   protected final void execute() {
     // FIXME implement command
+    
   }
 }

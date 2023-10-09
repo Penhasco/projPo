@@ -16,6 +16,12 @@ class DoNew extends Command<Calculator> {
   
   @Override
   protected final void execute() throws CommandException {
-    // FIXME implement command
+    Form form = new Form();
+    form.addIntegerField("Lines", Message.lines());
+    form.addIntegerField("Columns", Message.columns());
+    form.parse();
   }
 }
+
+
+

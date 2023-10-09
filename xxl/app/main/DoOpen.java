@@ -3,8 +3,9 @@ package xxl.app.main;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
+import xxl.app.exception.FileOpenFailedException;
 import xxl.core.Calculator;
-// FIXME import classes
+import xxl.core.exception.UnavailableFileException;
 
 /**
  * Open existing file.
@@ -17,12 +18,16 @@ class DoOpen extends Command<Calculator> {
   
   @Override
   protected final void execute() throws CommandException {
-    /*
+  
       try {
-      //FIXME implement command
+        Form form = new Form();
+        form.addStringField("File", Message.openFile());
+        form.parse();
+        String filename = form.getStringField("File");
+        _receiver.load(filename);
+
       } catch (UnavailableFileException e) {
       throw new FileOpenFailedException(e);
       }
-    */
   }
 }
