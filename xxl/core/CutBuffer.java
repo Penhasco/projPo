@@ -8,10 +8,6 @@ public class CutBuffer {
         cells = new ArrayList<>();
     }
 
-    public void addCell(Cell cell) {
-        cells.add(cell);
-    }
-
     public List<Cell> getCells() {
         return cells;
     }
