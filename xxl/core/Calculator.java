@@ -25,9 +25,6 @@ public class Calculator {
   private User _user;
   private String _associatedFile;
   private boolean _dirty;
-  
-  // FIXME add more fields and methods if needed
-  
   /**
    * Return the current spreadsheet.
    *
@@ -76,8 +73,6 @@ public class Calculator {
       throw new MissingFileAssociationException();
     }
     saveAs(_associatedFile);
-
-
   }
   
   /**
