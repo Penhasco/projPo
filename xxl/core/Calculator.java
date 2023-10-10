@@ -142,7 +142,10 @@ public class Calculator {
    */
   public void importFile(String filename) throws ImportFileException {
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-      int numrows = Integer.parseInt(reader.readLine());
+      int numRows = Integer.parseInt(reader.readLine());
+      int numCols = Integer.parseInt(reader.readline());
+      _spreadsheet = new Spreadsheet(numRows,numCols);
+      _dirty = true;
       // FIXME open import file and feed entries to new spreadsheet (in a cycle)
       //       each entry is inserted using insertContent of Spreadsheet. Set new
       // spreadsheet as the active one.
