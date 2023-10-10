@@ -146,11 +146,13 @@ public class Calculator {
       int numCols = Integer.parseInt(reader.readline());
       _spreadsheet = new Spreadsheet(numRows,numCols);
       _dirty = true;
-      
+      /**reads the first 2 lines, builds the spreadsheet with the number of lines and cols 
+      *and makes changes in the file */
       String line;
       while((line = reader.readline()) != null){
         String[] parts = line.split("\\|");
-            
+            /**é lido linha a linha, que é dividida em partes para analisar as coordenadas e o conteudo,
+        * inserindo o mesmo na celula da planilha */
             if (parts.length == 2) {
                     String[] position = parts[0].split(";");
                     int row = Integer.parseInt(position[0]);
