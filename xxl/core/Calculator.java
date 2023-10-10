@@ -1,5 +1,7 @@
 package xxl.core;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,7 +13,8 @@ import xxl.core.exception.ImportFileException;
 import xxl.core.exception.MissingFileAssociationException;
 import xxl.core.exception.UnavailableFileException;
 import xxl.core.exception.UnrecognizedEntryException;
-// FIXME import classes
+import xxl.core.User;
+import xxl.core.Spreadsheet;
 
 /**
  * Class representing a spreadsheet application.
@@ -87,20 +90,23 @@ public class Calculator {
    * @throws IOException if there is some error while serializing the state of the network to disk.
    */
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-    // FIXME implement serialization method
+    if (_spreadsheet == null) {
+        throw new MissingFileAssociationException();
+    }
     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            oos.writeObject(this); // Serialize the Calculator instance
-        } catch (FileNotFoundException e) {
-            throw e;
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e) {
-            throw e;
-        } 
-        _associatedFile = filename;
-        _dirty = false;
+        oos.writeObject(this); // Serialize the Calculator instance
+    } catch (FileNotFoundException e) {
+        throw e;
+    } catch (IOException e) {
+        throw e;
+    } catch (Exception e) {
+        throw e;
+    }
 
-  }
+    _associatedFile = filename;
+    _dirty = false;
+}
+
   
   /**
    * @param filename name of the file containing the serialized application's state
@@ -135,7 +141,8 @@ public class Calculator {
    * @throws ImportFileException
    */
   public void importFile(String filename) throws ImportFileException {
-    try {
+    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+      int numrows = Integer.parseInt(reader.readLine());
       // FIXME open import file and feed entries to new spreadsheet (in a cycle)
       //       each entry is inserted using insertContent of Spreadsheet. Set new
       // spreadsheet as the active one.
