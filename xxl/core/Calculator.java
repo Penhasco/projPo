@@ -146,14 +146,24 @@ public class Calculator {
       int numCols = Integer.parseInt(reader.readline());
       _spreadsheet = new Spreadsheet(numRows,numCols);
       _dirty = true;
-      // FIXME open import file and feed entries to new spreadsheet (in a cycle)
-      //       each entry is inserted using insertContent of Spreadsheet. Set new
-      // spreadsheet as the active one.
-      // ....
-    } catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
+      
+      String line;
+      while((line = reader.readline()) != null){
+        String[] parts = line.split("\\|");
+            
+            if (parts.length == 2) {
+                    String[] position = parts[0].split(";");
+                    int row = Integer.parseInt(position[0]);
+                    int col = Integer.parseInt(position[1]);
+                    String content = parts[1];
+            }
+                    // Inserir o conteúdo na planilha
+                    getSpreadsheet().insertContent(row, col, content);
+      }
+  }
+      catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
       throw new ImportFileException(filename, e);
     }
-
   }
   
   public boolean createUser(String name){
