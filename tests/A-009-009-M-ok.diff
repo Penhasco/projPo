@@ -1,0 +1,21 @@
+*** tests/A-009-009-M-ok.out	Fri Oct  6 12:23:29 2023
+--- tests/A-009-009-M-ok.outhyp	Wed Oct 11 15:15:24 2023
+***************
+*** 1,15 ****
+- Menu Principal
+- 1 - Novo
+- 2 - Abrir
+- 3 - Guardar
+- 4 - Menu de Edição
+- 5 - Menu de Consultas
+- 0 - Sair
+- Escolha uma opção: Ficheiro sem nome. Guardar ficheiro como: Menu Principal
+- 1 - Novo
+- 2 - Abrir
+- 3 - Guardar
+- 4 - Menu de Edição
+- 5 - Menu de Consultas
+- 0 - Sair
+- Escolha uma opção: 
+\ No newline at end of file
+--- 0 ----

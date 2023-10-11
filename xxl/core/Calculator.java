@@ -9,27 +9,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import xxl.core.User.User;
 import xxl.core.exception.ImportFileException;
 import xxl.core.exception.MissingFileAssociationException;
 import xxl.core.exception.UnavailableFileException;
 import xxl.core.exception.UnrecognizedEntryException;
-import xxl.core.User;
-import xxl.core.Spreadsheet;
 
-/**
- * Class representing a spreadsheet application.
- */
 public class Calculator {
-  /** The current spreadsheet. */
   private Spreadsheet _spreadsheet;
   private User _user;
   private String _associatedFile;
   private boolean _dirty;
-  /**
-   * Return the current spreadsheet.
-   *
-   * @returns the current spreadsheet of this application. This reference can be null.
-   */
+
+  // Constructor
   public Calculator() {
     _spreadsheet = null;
     _user = null;
@@ -37,138 +29,117 @@ public class Calculator {
     _dirty = false;
   }
 
+  // Getter for the current spreadsheet
   public final Spreadsheet getSpreadsheet() {
     return _spreadsheet;
   }
 
-  public final User getUser(){
+  // Getter for the user
+  public final User getUser() {
     return _user;
   }
 
+  // Setter for associating a file
   public void setAssociatedFile(String filename) {
     _associatedFile = filename;
   }
 
+  // Getter for the associated file
   public String getAssociatedFile() {
     return _associatedFile;
   }
 
+  // Getter for checking if changes have been made
   public boolean isDirty() {
     return _dirty;
   }
 
+  // Setter for marking the application as dirty
   public void setDirty(boolean dirty) {
     _dirty = dirty;
   }
 
-  /**
-   * Saves the serialized application's state into the file associated to the current network.
-   *
-   * @throws FileNotFoundException if for some reason the file cannot be created or opened. 
-   * @throws MissingFileAssociationException if the current network does not have a file.
-   * @throws IOException if there is some error while serializing the state of the network to disk.
-   */
+  // Save application state
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
     if (_associatedFile == null) {
       throw new MissingFileAssociationException();
     }
     saveAs(_associatedFile);
   }
-  
-  /**
-   * Saves the serialized application's state into the specified file. The current network is
-   * associated to this file.
-   *
-   * @param filename the name of the file.
-   * @throws FileNotFoundException if for some reason the file cannot be created or opened.
-   * @throws MissingFileAssociationException if the current network does not have a file.
-   * @throws IOException if there is some error while serializing the state of the network to disk.
-   */
+
+  // Save application state to a specified file
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
     if (_spreadsheet == null) {
-        throw new MissingFileAssociationException();
+      throw new MissingFileAssociationException();
     }
     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-        oos.writeObject(this); // Serialize the Calculator instance
+      oos.writeObject(this); 
     } catch (FileNotFoundException e) {
-        throw e;
+      throw e;
     } catch (IOException e) {
-        throw e;
+      throw e;
     } catch (Exception e) {
-        throw e;
+      throw e;
     }
 
     _associatedFile = filename;
     _dirty = false;
-}
+  }
 
-  
-  /**
-   * @param filename name of the file containing the serialized application's state
-   *        to load.
-   * @throws UnavailableFileException if the specified file does not exist or there is
-   *         an error while processing this file.
-   */
+  // Load application state from a file
   public void load(String filename) throws UnavailableFileException {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            Calculator loadedCalculator = (Calculator) ois.readObject(); // Deserialize the Calculator instance
-            // Copy the state of the loaded calculator to this calculator
-            this._spreadsheet = loadedCalculator._spreadsheet;
-            this._user = loadedCalculator._user;
-            this._associatedFile = loadedCalculator._associatedFile;
-            this._dirty = loadedCalculator._dirty;
-        }
-        catch (FileNotFoundException e) {
-            throw new UnavailableFileException(filename);
-        }
-        catch (IOException e) {
-            throw new UnavailableFileException(filename);
-        }
-        catch (ClassNotFoundException e) {
-            throw new UnavailableFileException(filename);
-        }
+      Calculator loadedCalculator = (Calculator) ois.readObject();
+      this._spreadsheet = loadedCalculator._spreadsheet;
+      this._user = loadedCalculator._user;
+      this._associatedFile = loadedCalculator._associatedFile;
+      this._dirty = loadedCalculator._dirty;
+    } catch (FileNotFoundException e) {
+      throw new UnavailableFileException(filename);
+    } catch (IOException e) {
+      throw new UnavailableFileException(filename);
+    } catch (ClassNotFoundException e) {
+      throw new UnavailableFileException(filename);
+    }
   }
-  
-  /**
-   * Read text input file and create domain entities.
-   *
-   * @param filename name of the text input file
-   * @throws ImportFileException
-   */
+
+  // Import data from a text file
   public void importFile(String filename) throws ImportFileException {
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       int numRows = Integer.parseInt(reader.readLine());
-      int numCols = Integer.parseInt(reader.readline());
-      _spreadsheet = new Spreadsheet(numRows,numCols);
+      int numCols = Integer.parseInt(reader.readLine());
+      _spreadsheet = new Spreadsheet(numRows, numCols);
       _dirty = true;
-      /**reads the first 2 lines, builds the spreadsheet with the number of lines and cols 
-      *and makes changes in the file */
+
       String line;
-      while((line = reader.readline()) != null){
+      while ((line = reader.readLine()) != null) {
         String[] parts = line.split("\\|");
-            /**é lido linha a linha, que é dividida em partes para analisar as coordenadas e o conteudo,
-        * inserindo o mesmo na celula da planilha */
-            if (parts.length == 2) {
-                    String[] position = parts[0].split(";");
-                    int row = Integer.parseInt(position[0]);
-                    int col = Integer.parseInt(position[1]);
-                    String content = parts[1];
-            }
-                    // Inserir o conteúdo na planilha
-                    getSpreadsheet().insertContent(row, col, content);
+        if (parts.length == 2) {
+          String[] position = parts[0].split(";");
+          int row = Integer.parseInt(position[0]);
+          int col = Integer.parseInt(position[1]);
+          String content = parts[1];
+          _spreadsheet.insertContent(row, col, content);
+        }
       }
-  }
-      catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
+    } catch (IOException | UnrecognizedEntryException e) {
       throw new ImportFileException(filename, e);
     }
   }
-  
-  public boolean createUser(String name){
+
+  // Method to create a user
+  public boolean createUser(String name) {
     return true;
   }
 
-  public void createNewSpreadsheet(int rows, int columns){
+  // Create a new spreadsheet with the given dimensions
+  public void createNewSpreadsheet(int rows, int columns) {
     _spreadsheet = new Spreadsheet(rows, columns);
+    _dirty = true;
+  }
+
+  public void setSpreadsheet(Spreadsheet newSpreadsheet) {
+    _spreadsheet = newSpreadsheet;
     _dirty = true;
   }
 }

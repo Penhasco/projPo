@@ -4,6 +4,7 @@ import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import xxl.core.Calculator;
 
+
 /**
  * Save to file under current name (if unnamed, query for name).
  */
@@ -23,7 +24,7 @@ class DoSave extends Command<Calculator> {
 
       // Check if there's an associated file
       String currentFile = _receiver.getAssociatedFile();
-      Form form = new Form(); // Create the form object
+      Form form = new Form();
       if (currentFile == null) {
         form.addStringField("File", Message.newSaveAs());
         form.parse();

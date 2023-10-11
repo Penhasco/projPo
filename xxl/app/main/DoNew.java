@@ -18,18 +18,25 @@ class DoNew extends Command<Calculator> {
   }
   
   @Override
-  protected final void execute() throws CommandException {
+protected final void execute() throws CommandException {
     Form form = new Form();
     form.addIntegerField("Lines", "Enter the number of lines:");
     form.addIntegerField("Columns", "Enter the number of columns:");
     form.parse();
 
-    //Gets dimensions from the form fields
+    //dimensions
     int numRows = form.integerField("Lines");
     int numCols = form.integerField("Columns");
 
-    //Creates new anonymous spreadsheet
-    new Spreadsheet(numRows, numCols);
+    // Validate input
+    if (numRows <= 0 || numCols <= 0) {
+        System.out.println("Invalid input: Rows and columns must be positive.");
+        return; // Exit without creating a new spreadsheet
+    }
+
+    Spreadsheet newSpreadsheet = new Spreadsheet(numRows, numCols);
+    _receiver.setSpreadsheet(newSpreadsheet);
+
   }
 }
 
