@@ -75,7 +75,10 @@ class DoShow extends Command<Spreadsheet> {
       for (int col = startCol; col <= endCol; col++) {
         Cell cell = sheet.getCell(row, col);
         if (cell != null) {
+          Literal content = cell.getContent();
+          if(content != null) {
           System.out.println(cell);
+          }
         }
       }
     }
