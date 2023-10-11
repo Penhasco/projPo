@@ -21,7 +21,7 @@ import pt.tecnico.uilib.menus.Menu;
 public class TextInteraction implements InteractionDriver {
 
   /** Input channel. */
-  private BufferedReader _in = new BufferedReader(new InputStreamReader(System.in));;
+  private BufferedReader _in = new BufferedReader(new InputStreamReader(System.in));
 
   /** Output channel. */
   private PrintStream _out = System.out;
@@ -157,7 +157,7 @@ public class TextInteraction implements InteractionDriver {
   /** @see pt.tecnico.uilib.InteractionDriver#render(String, String) */
   @Override
   public void render(String title, String text) {
-    if (text.length() > 0)
+    if (!text.isEmpty())
       _out.println(text);
   }
 
@@ -166,7 +166,7 @@ public class TextInteraction implements InteractionDriver {
    * @return the string read from the input.
    * @throws IOException in case of read errors
    */
-  private final String readString(String prompt) throws IOException {
+  private String readString(String prompt) throws IOException {
     if (prompt != null)
       _out.print(prompt);
 
@@ -190,7 +190,7 @@ public class TextInteraction implements InteractionDriver {
    * @return the number read from the input.
    * @throws IOException in case of read errors
    */
-  private final int readInteger(String prompt) throws IOException {
+  private int readInteger(String prompt) throws IOException {
     while (true) {
       try {
         return Integer.parseInt(readString(prompt));

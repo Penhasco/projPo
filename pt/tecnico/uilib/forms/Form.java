@@ -20,6 +20,9 @@ public class Form {
 	/** The Form's title (optional) */
 	private String _title;
 
+	/** Shows if the formed is filled */
+	private boolean _filled;
+
 	/** A list of Input requests */
 	private Map<String, Field<?>> _fields = new LinkedHashMap<>();
 
@@ -135,6 +138,10 @@ public class Form {
 		Field<?> input = _fields.get(key);
 		if (input == null)
 			throw new FormException(Message.keyNotFound(_title, key));
+
+                if (!_filled)
+                  parse();
+
 		Object value = input.value();
 		if (value == null)
 			throw new FormException(Message.formNotFilled(_title));
@@ -207,6 +214,7 @@ public class Form {
 		if (clear)
 			_fields.values().forEach(field -> field.clear());
 		_ui.fill(this);
+                _filled = true;
 		return this;
 	}
 
@@ -217,7 +225,14 @@ public class Form {
 		_fields.clear();
 	}
 
-	public static Boolean confirm(String prompt) {
+	/**
+	 * Clear the form.
+	 */
+        public void resetFields() {
+                _filled = false;
+	}
+
+        public static Boolean confirm(String prompt) {
 		Form confirm = new Form();
 		confirm.addBooleanField("answer", prompt);
 		return confirm.parse().booleanField("answer");
