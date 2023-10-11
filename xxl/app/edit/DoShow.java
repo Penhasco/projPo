@@ -77,8 +77,7 @@ class DoShow extends Command<Spreadsheet> {
         if (cell != null) {
           Literal content = cell.getContent();
           if(content != null) {
-            String cellOutput = formatCell(row,col,content);
-          System.out.println(cellOutput);
+          System.out.println(cell);
           }
         }
       }
