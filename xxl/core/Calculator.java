@@ -23,16 +23,20 @@ public class Calculator {
 
   // Constructor
   public Calculator() {
-    _spreadsheet = null;
+    _spreadsheet = new Spreadsheet(1, 1);
     _user = null;
     _associatedFile = null;
     _dirty = false;
+    setActiveSpreadsheet(_spreadsheet);
   }
 
-  // Getter for the current spreadsheet
   public final Spreadsheet getSpreadsheet() {
     return _spreadsheet;
   }
+
+  public void setActiveSpreadsheet(Spreadsheet spreadsheet) {
+    _spreadsheet = spreadsheet;
+}
 
   // Getter for the user
   public final User getUser() {
@@ -104,28 +108,46 @@ public class Calculator {
   }
 
   // Import data from a text file
-  public void importFile(String filename) throws ImportFileException {
-    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-      int numRows = Integer.parseInt(reader.readLine());
-      int numCols = Integer.parseInt(reader.readLine());
-      _spreadsheet = new Spreadsheet(numRows, numCols);
-      _dirty = true;
-
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split("\\|");
-        if (parts.length == 2) {
-          String[] position = parts[0].split(";");
-          int row = Integer.parseInt(position[0]);
-          int col = Integer.parseInt(position[1]);
-          String content = parts[1];
-          _spreadsheet.insertContent(row, col, content);
-        }
-      }
-    } catch (IOException | UnrecognizedEntryException e) {
-      throw new ImportFileException(filename, e);
+    public void importFile(String filename) throws ImportFileException {
+      if (_spreadsheet == null) {
+        System.out.println("No active spreadsheet. Please select or create a spreadsheet.");
+        return;
     }
+      try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+          int numRows = -1;
+          int numCols = -1;
+  
+          String line;
+          while ((line = reader.readLine()) != null) {
+              if (line.startsWith("linhas=")) {
+                  numRows = Integer.parseInt(line.substring(7));
+              } else if (line.startsWith("colunas=")) {
+                  numCols = Integer.parseInt(line.substring(8));
+              } else {
+                  String[] parts = line.split("\\|");
+                  if (parts.length == 2) {
+                      String[] position = parts[0].split(";");
+                      int row = Integer.parseInt(position[0]);
+                      int col = Integer.parseInt(position[1]);
+                      String content = parts[1];
+                      _spreadsheet.insertContent(row, col, content);
+                  }
+              }
+          }
+  
+          if (numRows == -1 || numCols == -1) {
+              throw new ImportFileException(filename);
+          }
+  
+          if (_spreadsheet == null) {
+            _spreadsheet = new Spreadsheet(numRows, numCols);
+            _dirty = true;
+        }
+      } catch (IOException | UnrecognizedEntryException e) {
+          throw new ImportFileException(filename, e);
+      }
   }
+  
 
   // Method to create a user
   public boolean createUser(String name) {

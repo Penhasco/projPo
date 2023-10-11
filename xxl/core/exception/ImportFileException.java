@@ -15,10 +15,10 @@ public class ImportFileException extends Exception {
   
   /**
    * @param filename name of the import file
-   * @param cause exception that triggered this one
+   * @param e exception that triggered this one
    */
-  public ImportFileException(String filename, Exception cause) {
-    super(ERROR_MESSAGE + filename, cause);
+  public ImportFileException(String filename, Exception e) {
+    super(ERROR_MESSAGE + filename, e);
   }
   
 }

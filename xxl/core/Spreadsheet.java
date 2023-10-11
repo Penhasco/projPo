@@ -68,7 +68,11 @@ public class Spreadsheet implements Serializable {
 
         public List<Cell> getCells() {
             return cells;
-      }
+    }
+
+        public boolean isEmpty() {
+            return false;
+        }
     }
 
     public List<Literal> getCellsValues(Range range) {
@@ -80,7 +84,7 @@ public class Spreadsheet implements Serializable {
     }
 
     public Cell getCell(int row, int col) {
-      return null;
+        return null;
     }
 
     

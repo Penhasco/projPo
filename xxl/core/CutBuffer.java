@@ -9,4 +9,10 @@ public class CutBuffer implements Serializable {
     public List<Cell> getCells() {
         return cells;
     }
+
+    public boolean isEmpty() {
+        return cells.isEmpty();
+    }
+
+
 }

@@ -2,10 +2,9 @@ package xxl.app.edit;
 
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-import xxl.core.Spreadsheet;
-import xxl.core.Literal.Literal;
-import pt.tecnico.uilib.forms.Form;
 import xxl.core.Cell;
+import xxl.core.Spreadsheet;
+import pt.tecnico.uilib.forms.Form;
 
 /**
  * Class for searching functions.
@@ -25,41 +24,60 @@ class DoShow extends Command<Spreadsheet> {
       return;
     }
 
+    // Create a form to gather user input
     Form form = new Form();
-    form.addIntegerField("Start Row", "Enter the starting row:");
-    form.addIntegerField("Start Column", "Enter the starting column:");
-    form.addIntegerField("End Row", "Enter the ending row:");
-    form.addIntegerField("End Column", "Enter the ending column:");
+    form.addStringField("range", "Enter the range (e.g., 'startRow;startCol:endRow;endCol'):");
+
+    // Parse user input
     form.parse();
 
-    int startRow = form.integerField("Start Row");
-    int startCol = form.integerField("Start Column");
-    int endRow = form.integerField("End Row");
-    int endCol = form.integerField("End Column");
+    String range = form.stringField("range");
+
+    if (range == null) {
+      System.out.println("No range specified.");
+      return;
+    }
+
+    String[] rangeParts = range.split(":");
+    if (rangeParts.length != 2) {
+      System.out.println("Invalid range.");
+      return;
+    }
+
+    String[] startParts = rangeParts[0].split(";");
+    String[] endParts = rangeParts[1].split(";");
+    if (startParts.length != 2 || endParts.length != 2) {
+      System.out.println("Invalid range.");
+      return;
+    }
+
+    int startRow = Integer.parseInt(startParts[0]);
+    int startCol = Integer.parseInt(startParts[1]);
+    int endRow = Integer.parseInt(endParts[0]);
+    int endCol = Integer.parseInt(endParts[1]);
+
+    if (startRow < 0 || startCol < 0 || endRow < 0 || endCol < 0) {
+      System.out.println("Invalid range.");
+      return;
+    }
+
+    if (startRow > endRow || startCol > endCol) {
+      System.out.println("Invalid range.");
+      return;
+    }
+
+    if (endRow >= sheet.getRows() || endCol >= sheet.getColumns()) {
+      System.out.println("Invalid range.");
+      return;
+    }
 
     for (int row = startRow; row <= endRow; row++) {
       for (int col = startCol; col <= endCol; col++) {
         Cell cell = sheet.getCell(row, col);
-        if (cell != null && cell.getContent() != null) {
-          Literal value = cell.getContent();
-
-
-          String content = formatCell(row, col, value);
-          System.out.println(content);
+        if (cell != null) {
+          System.out.println(cell);
         }
       }
     }
   }
-
-  private String formatCell(int row, int col, Literal value) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(row).append(";").append(col).append("|");
-    if (value.Literal()) {
-      sb.append(value.Literal());
-    } else {
-      sb.append(value.toString());
-    }
-    return sb.toString();
-  }
 }
-
