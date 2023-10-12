@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import xxl.core.Literal.Literal;
 import xxl.core.User.User;
 import xxl.core.exception.ImportFileException;
 import xxl.core.exception.MissingFileAssociationException;
@@ -27,7 +28,6 @@ public class Calculator {
     _user = null;
     _associatedFile = null;
     _dirty = false;
-    setActiveSpreadsheet(_spreadsheet);
   }
 
   public final Spreadsheet getSpreadsheet() {
@@ -35,8 +35,8 @@ public class Calculator {
   }
 
   public void setActiveSpreadsheet(Spreadsheet spreadsheet) {
-    _spreadsheet = spreadsheet;
-}
+    _spreadsheetInitialized = true;
+  }
 
   // Getter for the user
   public final User getUser() {
@@ -112,64 +112,46 @@ public class Calculator {
     }
   // Import data from a text file
     public void importFile(String filename) throws ImportFileException {
-      try {
-        String[] lines = filename.split("\n");
-        int numRows = -1;
-        int numCols = -1;
-
-        for (String line : lines) {
-            String[] parts = line.split("\\|");
-            if (parts.length == 2) {
-                String[] position = parts[0].split(";");
-                if (position.length == 2) {
-                    int row = Integer.parseInt(position[0]);
-                    int col = Integer.parseInt(position[1]);
-                    String content = parts[1];
-
-                    if (_spreadsheet == null) {
-                        throw new ImportFileException("Spreadsheet is not initialized");
-                    }
-
-                    _spreadsheet.insertContent(row, col, content);
-                }
-            } else if (line.startsWith("linhas=")) {
-                numRows = Integer.parseInt(line.substring(7));
-            } else if (line.startsWith("colunas=")) {
-                numCols = Integer.parseInt(line.substring(8));
+        try(BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+          String line;
+          int numRows = -1;
+          int numCols = -1;
+          while ((line = reader.readLine()) != null) {
+            if (line.startsWith("linhas=")) {
+              numRows = Integer.parseInt(line.substring(7));
             }
-        }
+            if (line.startsWith("colunas=")) {
+              numCols = Integer.parseInt(line.substring(8));
+              System.out.println("Rows: " + numRows);
+              System.out.println("Columns: " + numCols);
+              setActiveSpreadsheet(_spreadsheet);
+            }
+            createNewSpreadsheet(numRows, numCols);
+            
+            if (_spreadsheetInitialized) {
+                String[] parts = line.split("[;|]");
+                if (parts.length == 3) {
+                  int row = Integer.parseInt(parts[0]);
+                  int col = Integer.parseInt(parts[1]);
+                  double content = Double.parseDouble(parts[2]);
+                  Literal content = new Literal(parts[2]);
 
-        if (numRows != -1 && numCols != -1 && _spreadsheet == null) {
-            _spreadsheet = new Spreadsheet(numRows, numCols);
-            _dirty = true;
-            _spreadsheetInitialized = true;
-        } else if (numRows == -1 || numCols == -1) {
-            throw new ImportFileException("Invalid data format");
-        }
-    } catch (UnrecognizedEntryException e) {
-        throw new ImportFileException("Error while importing data", e);
-    }
-}
-      /*try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-        String line;
-        int numRows = -1;
-        int numCols = -1;
-        while ((line = reader.readLine()) != null) {
-          String[] fields = line.split("\\|");
-          if (line.startsWith("linhas=")) {
-            numRows = Integer.parseInt(line.substring(7));
+                  try {
+                    _spreadsheet.insertContent(row, col, content);
+                  } catch (UnrecognizedEntryException e) {
+                    System.out.println("Invalid data format");
+                  }
+              } 
+                else {
+                  System.out.println("Invalid data format");
+            }
           }
-          if (line.startsWith("colunas=")) {
-            numCols = Integer.parseInt(line.substring(8));
-          }
-          createNewSpreadsheet(numRows, numCols);
-          
         }
       } catch (IOException e) {
           throw new ImportFileException(filename, e);
       }
   }
-  */
+
   
 
   
