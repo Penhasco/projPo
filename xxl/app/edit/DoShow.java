@@ -71,13 +71,15 @@ class DoShow extends Command<Spreadsheet> {
       return;
     }
 
-    for (int row = startRow; row <= endRow; row++) {
-      for (int col = startCol; col <= endCol; col++) {
-        Cell cell = sheet.getCell(row, col);
-        if (cell != null) {
-          System.out.println(cell);
+    for (int i = startRow; i <= endRow; i++) {
+      for (int j = startCol; j <= endCol; j++) {
+        Cell cell = sheet.getCell(i, j);
+        if (cell.getContent() != null) {
+          System.out.print(cell.getContent().toString());
         }
+        System.out.print("\t");
       }
+      System.out.println();
     }
   }
 }

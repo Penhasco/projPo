@@ -37,8 +37,4 @@ public class Cell implements Serializable {
     public String toString() {
         return "Cell{" + "row=" + _row + ", column=" + _column + '}';
     }
-
-    public Spreadsheet getSpreadsheet() {
-        return new Spreadsheet(getRow(), getColumn());
-    }
 }

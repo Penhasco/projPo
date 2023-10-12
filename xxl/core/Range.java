@@ -31,10 +31,6 @@ public class Range {
         }
         return cells;  
     }
-
-    public Spreadsheet getSpreadsheet() {
-        return _cells.getSpreadsheet();
-    }
 }
     
 

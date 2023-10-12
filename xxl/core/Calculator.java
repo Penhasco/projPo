@@ -20,10 +20,10 @@ public class Calculator {
   private User _user;
   private String _associatedFile;
   private boolean _dirty;
+  private boolean _spreadsheetInitialized = false;
 
   // Constructor
   public Calculator() {
-    _spreadsheet = new Spreadsheet(1, 1);
     _user = null;
     _associatedFile = null;
     _dirty = false;
@@ -106,47 +106,72 @@ public class Calculator {
       throw new UnavailableFileException(filename);
     }
   }
-
+  public void createNewSpreadsheet(int rows, int columns) {
+      _spreadsheet = new Spreadsheet(rows, columns);
+      _dirty = true;
+    }
   // Import data from a text file
     public void importFile(String filename) throws ImportFileException {
-      if (_spreadsheet == null) {
-        System.out.println("No active spreadsheet. Please select or create a spreadsheet.");
-        return;
-    }
-      try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-          int numRows = -1;
-          int numCols = -1;
-  
-          String line;
-          while ((line = reader.readLine()) != null) {
-              if (line.startsWith("linhas=")) {
-                  numRows = Integer.parseInt(line.substring(7));
-              } else if (line.startsWith("colunas=")) {
-                  numCols = Integer.parseInt(line.substring(8));
-              } else {
-                  String[] parts = line.split("\\|");
-                  if (parts.length == 2) {
-                      String[] position = parts[0].split(";");
-                      int row = Integer.parseInt(position[0]);
-                      int col = Integer.parseInt(position[1]);
-                      String content = parts[1];
-                      _spreadsheet.insertContent(row, col, content);
-                  }
-              }
-          }
-  
-          if (numRows == -1 || numCols == -1) {
-              throw new ImportFileException(filename);
-          }
-  
-          if (_spreadsheet == null) {
+      try {
+        String[] lines = filename.split("\n");
+        int numRows = -1;
+        int numCols = -1;
+
+        for (String line : lines) {
+            String[] parts = line.split("\\|");
+            if (parts.length == 2) {
+                String[] position = parts[0].split(";");
+                if (position.length == 2) {
+                    int row = Integer.parseInt(position[0]);
+                    int col = Integer.parseInt(position[1]);
+                    String content = parts[1];
+
+                    if (_spreadsheet == null) {
+                        throw new ImportFileException("Spreadsheet is not initialized");
+                    }
+
+                    _spreadsheet.insertContent(row, col, content);
+                }
+            } else if (line.startsWith("linhas=")) {
+                numRows = Integer.parseInt(line.substring(7));
+            } else if (line.startsWith("colunas=")) {
+                numCols = Integer.parseInt(line.substring(8));
+            }
+        }
+
+        if (numRows != -1 && numCols != -1 && _spreadsheet == null) {
             _spreadsheet = new Spreadsheet(numRows, numCols);
             _dirty = true;
+            _spreadsheetInitialized = true;
+        } else if (numRows == -1 || numCols == -1) {
+            throw new ImportFileException("Invalid data format");
         }
-      } catch (IOException | UnrecognizedEntryException e) {
+    } catch (UnrecognizedEntryException e) {
+        throw new ImportFileException("Error while importing data", e);
+    }
+}
+      /*try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        String line;
+        int numRows = -1;
+        int numCols = -1;
+        while ((line = reader.readLine()) != null) {
+          String[] fields = line.split("\\|");
+          if (line.startsWith("linhas=")) {
+            numRows = Integer.parseInt(line.substring(7));
+          }
+          if (line.startsWith("colunas=")) {
+            numCols = Integer.parseInt(line.substring(8));
+          }
+          createNewSpreadsheet(numRows, numCols);
+          
+        }
+      } catch (IOException e) {
           throw new ImportFileException(filename, e);
       }
   }
+  */
+  
+
   
 
   // Method to create a user
@@ -154,14 +179,9 @@ public class Calculator {
     return true;
   }
 
-  // Create a new spreadsheet with the given dimensions
-  public void createNewSpreadsheet(int rows, int columns) {
-    _spreadsheet = new Spreadsheet(rows, columns);
-    _dirty = true;
-  }
-
   public void setSpreadsheet(Spreadsheet newSpreadsheet) {
     _spreadsheet = newSpreadsheet;
     _dirty = true;
   }
+
 }

@@ -14,5 +14,7 @@ public class CutBuffer implements Serializable {
         return cells.isEmpty();
     }
 
-
+    public void addCell(Cell cell) {
+        cells.add(cell);
+    }
 }

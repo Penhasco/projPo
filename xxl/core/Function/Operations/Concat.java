@@ -1,4 +1,4 @@
-package xxl.core.Function.Operations;
+/*package xxl.core.Function.Operations;
 
 import xxl.core.Literal.Literal;
 import xxl.core.Literal.LiteralString;
@@ -8,14 +8,14 @@ import xxl.core.Function.IntervalFunction;
 
 import java.util.List;
 
-public class Concat extends IntervalFunction {
+public class Concat extends IntervalFunction {  
     public Concat() {
         super("Concat"); // Set the name for the Concat function
     }
 
     @Override
     public Literal compute() {
-        List<Literal> cellValues = getCellsValues();
+      List<Literal> cellValues = getCellsValues();
 
         StringBuilder concatenatedValue = new StringBuilder();
         boolean foundString = false;
@@ -35,18 +35,21 @@ public class Concat extends IntervalFunction {
     }
 
     private List<Literal> getCellsValues() {
-        Spreadsheet spreadsheet = getSpreadsheet();
         Range range = getAssociatedRange();
+        Spreadsheet spreadsheet = getSpreadsheet();
+
         List<Literal> cellValues = spreadsheet.getCellsValues(range);
 
         return cellValues;
     }
+    
 
     private Spreadsheet getSpreadsheet() {
-        Range range = getAssociatedRange();
-        Spreadsheet spreadsheet = range.getSpreadsheet();
-
-        return spreadsheet;
+        return getAssociatedRange().getSpreadsheet();
     }
-
 }
+
+
+
+
+*/

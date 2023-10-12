@@ -33,10 +33,6 @@ protected final void execute() throws CommandException {
         System.out.println("Invalid input: Rows and columns must be positive.");
         return; // Exit without creating a new spreadsheet
     }
-
-    Spreadsheet newSpreadsheet = new Spreadsheet(numRows, numCols);
-    _receiver.setSpreadsheet(newSpreadsheet);
-
   }
 }
 

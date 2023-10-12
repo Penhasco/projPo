@@ -41,14 +41,16 @@ public class Spreadsheet implements Serializable {
         _changed = changed;
     }
 
-
-
-    public void insertContent(int row, int column, String contentSpecification) throws UnrecognizedEntryException {
-        // Implement content insertion here, handle exceptions.
+    public List<Cell> getCutBuffer() {
+        return _cutBuffer.getCells();
+    }
+    
+    public Cell getCell(int row, int column) {
+        return new Cell();
     }
 
-    public CutBuffer getCutBuffer() {
-        return _cutBuffer;
+    public void insertContent(int row, int column, String contentSpecification) throws UnrecognizedEntryException {
+        
     }
 
     public void copy(String range) {
@@ -63,29 +65,11 @@ public class Spreadsheet implements Serializable {
         // Implement adding a user to the spreadsheet.
     }
 
-    public class CutBuffer {
-        private List<Cell> cells;
-
-        public List<Cell> getCells() {
-            return cells;
-    }
-
-        public boolean isEmpty() {
-            return false;
-        }
-    }
-
-    public List<Literal> getCellsValues(Range range) {
-        return null;
+    public boolean isEmpty() {
+        return false;
     }
 
     public Spreadsheet getSpreadsheet() {
         return null;
     }
-
-    public Cell getCell(int row, int col) {
-        return null;
-    }
-
-    
 }
