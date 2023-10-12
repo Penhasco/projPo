@@ -4,6 +4,7 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import xxl.core.Cell;
 import xxl.core.Spreadsheet;
+import xxl.core.Literal.Literal;
 import pt.tecnico.uilib.forms.Form;
 
 /**
@@ -71,11 +72,13 @@ class DoShow extends Command<Spreadsheet> {
       return;
     }
 
-    for (int i = startRow; i <= endRow; i++) {
-      for (int j = startCol; j <= endCol; j++) {
-        Cell cell = sheet.getCell(i, j);
-        if (cell.getContent() != null) {
-          System.out.print(cell.getContent().toString());
+    for (int row = startRow; row <= endRow; row++) {
+      for (int col = startCol; col <= endCol; col++) {
+        Cell cell = sheet.getCell(row, col);
+        if (cell != null) {
+          Literal content = cell.getContent();
+          if (content != null) {
+          System.out.println(cell);
         }
         System.out.print("\t");
       }
